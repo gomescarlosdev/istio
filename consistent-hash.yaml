@@ -1,0 +1,31 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: nginx-virtual-service
+spec:
+  hosts:
+  - nginx-service
+  http:
+    - route:
+        - destination:
+            host: nginx-service
+            subset: all
+
+---
+
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: nginx-destination-rule
+spec:
+  host: nginx-service
+  trafficPolicy:
+    loadBalancer:
+      consistentHash:
+        httpHeaderName: "x-uid"
+  subsets:
+    - name: all
+      labels:
+        version: nginx
+    
+
